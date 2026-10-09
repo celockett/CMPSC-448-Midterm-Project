@@ -6,7 +6,7 @@ from model import TextCNN
 from data import load, build_vocab, encode, LABELS
 
 df = load("LLM_Data_Final.csv")
-df["domain"] = df.Question.map(pd.read_csv("domains.csv").set_index("question")["domain"])
+df["domain"] = df.group.map(pd.read_csv("LLM_Domains.csv").set_index("question")["domain"])
 assert df.domain.notna().all(), "some questions have no domain label"
 
 def predict(model, X):
