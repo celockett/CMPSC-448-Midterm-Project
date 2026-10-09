@@ -24,10 +24,11 @@ def features(text):
         "n_sentences": n_s,
         "words_per_sentence": n_w / n_s,
         "avg_word_len": sum(len(t) for t in tokens) / n_w,
-        "type_token_ration": len(set(lower)) / n_w,
+        "type_token_ratio": len(set(lower)) / n_w,
         "capitalized_ratio": sum(t[0].isupper() for t in tokens) / n_w,
         "digit_ratio": sum(c.isdigit() for c in text) / n_chars,
-        "comma_rate": (text.count(";") + text.count(":")) / n_w,
+        "comma_rate": text.count(",") / n_w,
+        "semicolon_colon_rate": (text.count(";") + text.count(":")) / n_w,
         "dash_rate": len(re.findall(r"[---]", text)) / n_w,
         "paren_rate": text.count("(") / n_w,
         "quote_rate": len(re.findall(r"[\"']", text)) / n_w,
@@ -49,12 +50,12 @@ def accuracy_with(cols):
 
 
 print("=== Feature means by source ===")
-means = f.assign(Source=df.Source.value).groupby("Source").mean().T.round(3)
-print(eans.to_string())
+means = F.assign(Source=df.Source.value).groupby("Source").mean().T.round(3)
+print(means.to_string())
 
-print("\n=== Test accuracy, feature classifier (logistic regression, chance = 0.33 ===)")
+print("\n=== Test accuracy, feature classifier (logistic regression, chance = 0.33) ===")
 conditions = [
-    ("Structural only", GROUPS["structural"]),
+    ("structural only", GROUPS["structural"]),
     ("punctuation only", GROUPS["punctuation"]),
     ("word-level only", GROUPS["word_level"]),
     ("all features", ALL),
@@ -68,8 +69,8 @@ for name, cols in conditions:
 
 
 print("\n=== Bag-of-words baseline (TF-IDF, 1-2 grams, logistic regression) ===")
-vec = TfidVectorizer(ngram_range=(1, 2), mind_df=2)
+vec = TfidfVectorizer(ngram_range=(1, 2), min_df=2)
 Xtr = vec.fit_transform(df.Answer.iloc[train])
-Xte = vec.transform(def.Answer.iloc[test])
+Xte = vec.transform(df.Answer.iloc[test])
 clf = LogisticRegression(max_iter=2000).fit(Xtr, y[train])
 print(f"TF-IDF vocabulary only {accuracy_score(y[test], clf.predict(Xte)):.3f}")
