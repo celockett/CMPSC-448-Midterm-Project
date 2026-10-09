@@ -1,0 +1,36 @@
+
+=== CNN | mode: input ===
+test accuracy per seed: [0.267, 0.25, 0.3]
+              precision    recall  f1-score   support
+
+     ChatGPT      0.299     0.217     0.251       120
+      Claude      0.278     0.225     0.249       120
+      Gemini      0.256     0.375     0.304       120
+
+    accuracy                          0.272       360
+   macro avg      0.278     0.272     0.268       360
+weighted avg      0.278     0.272     0.268       360
+
+confusion matrix(rows = true, cols = predicted):
+          ChatGPT  Claude  Gemini
+ChatGPT       26      27      67
+Claude        29      27      64
+Gemini        32      43      45
+
+=== LSTM | mode: input ===
+test accuracy per seed: [0.233, 0.375, 0.258]
+              precision    recall  f1-score   support
+
+     ChatGPT      0.287     0.342     0.312       120
+      Claude      0.227     0.125     0.161       120
+      Gemini      0.318     0.400     0.354       120
+
+    accuracy                          0.289       360
+   macro avg      0.277     0.289     0.276       360
+weighted avg      0.277     0.289     0.276       360
+
+confusion matrix(rows = true, cols = predicted):
+          ChatGPT  Claude  Gemini
+ChatGPT       41      29      50
+Claude        52      15      53
+Gemini        50      22      48
