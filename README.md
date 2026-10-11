@@ -1,6 +1,7 @@
 # CMPSC-448-Midterm-Project: Who Wrote It? Identifying LLMs from Their Responses
 
 Team Leader: Cameryn Lockett
+
 Member: Alyssa Flusser
 
 Report: 'CMPSC 448 Midterm Project 1.pdf'
