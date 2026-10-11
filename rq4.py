@@ -29,9 +29,9 @@ def features(text):
         "digit_ratio": sum(c.isdigit() for c in text) / n_chars,
         "comma_rate": text.count(",") / n_w,
         "semicolon_colon_rate": (text.count(";") + text.count(":")) / n_w,
-        "dash_rate": len(re.findall(r"[---]", text)) / n_w,
+        "dash_rate": len(re.findall(r"[-–—]", text)) / n_w,
         "paren_rate": text.count("(") / n_w,
-        "quote_rate": len(re.findall(r"[\"']", text)) / n_w,
+        "quote_rate": len(re.findall(r"[\"“”']", text)) / n_w,
         "question_rate": text.count("?") / n_w,}
 
 F = pd.DataFrame([features(t) for t in df.Answer])
@@ -50,10 +50,10 @@ def accuracy_with(cols):
 
 
 print("=== Feature means by source ===")
-means = F.assign(Source=df.Source.value).groupby("Source").mean().T.round(3)
+means = F.assign(Source=df.Source).groupby("Source").mean().T.round(3)
 print(means.to_string())
 
-print("\n=== Test accuracy, feature classifier (logistic regression, chance = 0.33) ===")
+print("\n=== Test accuracy, feature classifier (logistic regression, chance = 0.333) ===")
 conditions = [
     ("structural only", GROUPS["structural"]),
     ("punctuation only", GROUPS["punctuation"]),

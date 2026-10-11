@@ -1,5 +1,5 @@
 import copy, random, re, sys
-import numpy as np, pandas as pd, otrch, torch.nn as nn
+import numpy as np, pandas as pd, torch, torch.nn as nn
 from sklearn.metrics import classification_report, confusion_matrix
 from model import TextCNN
 from data import load, split, build_vocab, encode, LABELS
@@ -7,7 +7,7 @@ from data import load, split, build_vocab, encode, LABELS
 
 
 MODE = sys.argv[1]
-assert MODE in ("length", "shuffle", "nopunct", "mode must be length, shuffle, or no punct")
+assert MODE in ("length", "shuffle", "nopunct"), "mode must be length, shuffle, or nopunct"
 
 df = load("LLM_Data_Final.csv")
 
@@ -37,7 +37,7 @@ Xtr, ytr = prep(train); Xva, yva = prep(val); Xte, yte = prep(test)
 def predict(model, X):
     model.eval()
     with torch.no_grad():
-    return model(X).argmax(1)
+        return model(X).argmax(1)
 
 def run(seed):
     torch.manual_seed(seed)
@@ -49,9 +49,9 @@ def run(seed):
         model.train()
         for b in torch.randperm(len(Xtr)).split(32):
             opt.zero_grad()
-            loss_fn(model(Xtr[b]), ytr[]).backward()
+            loss_fn(model(Xtr[b]), ytr[b]).backward()
             opt.step()
-        acc = (predcit(model, Xva) == yva). float().mean().item()
+        acc = (predict(model, Xva) == yva).float().mean().item()
         if acc > best_acc:
             best_acc, best_state, bad = acc, copy.deepcopy(model.state_dict()), 0
         else:
@@ -65,6 +65,6 @@ def run(seed):
 preds = [run(seed) for seed in range(3)]
 print(f"\n=== CNN | ablation: {MODE} ===")
 print("test accuracy per seed:", [round(float((p == yte.numpy()).mean()), 3) for p in preds] )
-y_all, p_all = np.tile(yte.numpy(), len(preds)), np. concatenate(preds)
+y_all, p_all = np.tile(yte.numpy(), len(preds)), np.concatenate(preds)
 print(classification_report(y_all, p_all, target_names=LABELS, digits=3))
 print("confusion matrix (rows = true, cols = predicted):\n", pd.DataFrame(confusion_matrix(y_all, p_all), index=LABELS, columns=LABELS))
